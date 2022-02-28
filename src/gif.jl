@@ -5,6 +5,9 @@
 ######################################################################
 
 using Reel
+using CSV
+using DelimitedFiles
+
 export gif
 
 """
@@ -20,7 +23,7 @@ The gif will be saved at `temp.gif`.
 """
 function gif(em::ErgodicManager, tm::TrajectoryManager, trajectory_file::String="temp.csv"; show_score=true, fps::Int=17)
 	# First, let's read the trajectories in...
-	trajectories = readcsv(trajectory_file)
+	trajectories = readdlm(trajectory_file, ',', Float64)
 
 
 	frames = Frames(MIME("image/png"), fps=fps)
@@ -84,4 +87,35 @@ function gif(em::ErgodicManager, xd::VVF, vtm::VTM; show_score=true, fps::Int=5)
 	end
 
 	write("temp.gif", frames)
+end
+
+"""
+`mat2traj(mat::Matrix{Float64})`
+
+Converts a matrix to a vector of Float64 vectors (VVF's).
+Assumes the matrix is `N x n`, where `n` is the dimensionality of the state space and `N` is the number of points in the trajectory.
+"""
+function mat2traj(mat::Matrix{Float64})
+	N,n = size(mat)
+
+	traj = Array{Vector{Float64}}(undef, N)
+	for i = 1:N
+		traj[i] = vec(mat[i,:])
+	end
+	return traj
+end
+
+"""
+`traj2mat(traj::VVF)`
+
+Converts vector of vector of floats into `N x n` matrix, where `N` is the number of points in trajectory and `n` is the dimensionality of the state.
+"""
+function traj2mat(traj::VVF)
+	N = length(traj)
+	n = length(traj[1])
+	mat = zeros(N, n)
+	for i = 1:N
+		mat[i,:] = traj[i]
+	end
+	return mat
 end

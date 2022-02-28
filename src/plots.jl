@@ -64,7 +64,7 @@ function plot(em::ErgodicManager, xd::VVF;
     # determines if ergodic score should be shown
     if show_score
         es = ergodic_score(em, xd)
-        title_string = "es = $(round(es,5))"
+        title_string = "es = $(round(es,digits=5))"
         title(title_string)
     end
 end
