@@ -30,6 +30,7 @@ function plot_trajectory(xd::VVF;
         for i = 1:N
             zvals[i] = xd[i][3]
         end
+		m = "."
         plot3D(xvals, yvals, zvals, ls=ls, marker=m, ms=ms, lw=lw)
         xlabel(L"x")
         ylabel(L"y")
